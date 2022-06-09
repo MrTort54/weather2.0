@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weather</title>
+    <link rel="icon" href="cloud.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        input{
+            align-items: center;
+            display: flex;
+            justify-content: center;
+
+            
+        }
+
+        .wrap {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            background:rgb(136,241,192);
+            background: radial-gradient(circle, rgba(136,241,192,1) 2%, rgba(71,153,184,1) 83%);
+            transition: 5s;
+        }
+
+        .card {
+            width: 300px;
+            height: 400px;
+            background-color: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(5px);
+            border-radius: 20px;
+            flex-direction: column;
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            justify-content: center;
+        }
+
+        .city {
+            background-color: transparent;
+            border: none;
+            border-bottom: 2px solid #fff;
+            outline: none;
+            color: #fff;
+            font-size: 20px;
+            font-family: Montserrat;
+            font-weight: 500;
+            z-index: 2;
+            position: relative;
+            width: 100%;
+            align-items: center;
+            display: flex;
+            justify-content: center;
+        }
+        .logo{
+            width: 100px;
+            height: 100px;
+            background-image: url(earth.png);
+            background-size: contain;
+            margin-top: -50px;
+            margin-bottom: 20px;
+        }
+        .conteiner_btn{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 80px;
+        }
+
+        .checkWeather {
+            background-color: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(20px);
+            border: none;
+            padding: 16px 30px;
+            margin-top: 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            font-family:Arial, Helvetica, sans-serif;
+            color:  rgba(0, 0, 0, 0.5);
+            font-weight: 600;
+            transition: 0.5s;
+            
+
+        }
+        .checkWeather:hover{
+            font-weight: 580;
+            font-size: 16px;
+            padding: 10px 18px;
+            transition: 0.5s;
+            background-color: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(20px);
+            color:  rgba(0, 0, 0, 0.3);
+
+        }
+
+        .cityLabel {
+            color: #fff;
+            position: relative;
+            top: 20px;
+            font-size: 18px;
+            font-family: Montserrat;
+            font-weight: 300;
+            z-index: 1;
+            transition: 1s;
+        }
+
+        span {
+            color: #fff;
+            left: 90px;
+
+            font-size: 20px;
+            font-family: Montserrat;
+            margin-top: 10px;
+            text-align: center;
+        }
+        .infoCard{
+            display: none;
+        }
+        #logo_2{
+            background-image: url(error.png);
+
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrap" id="wrap">
+        <div class="card infoCard" id="infoCard">
+            <div class="logo" id="logo_2"></div>
+            <span id="country">ERROR</span>
+            <span id="temperature">try again</span>
+            <span id="feels_like"></span>
+            <span id="description"></span>
+            <span id="wind"></span>
+            
+        </div>
+
+        <div class="card">
+            <div class="logo" id="logo"></div>
+            <div class="inputContainer">
+                <span class="cityLabel" id="cityLabel">City name</span>
+                <input type="text" id="city" class="city">
+            </div>
+            <div class="conteiner_btn">
+                <button id="checkWeather" class="checkWeather">Подивитись погоду</button>
+             </div>
+        </div>
+    </div>
+    <script>
+        city.onclick = function() {
+            cityLabel.style.top = '-10px';
+            cityLabel.style.fontSize = '14px';
+            cityLabel.style.left = '98px';
+            cityLabel.style.Color =  ' rgba(255, 255, 255, 0.2)';
+        }
+        checkWeather.onclick = function() {
+            infoCard.style.display = 'flex';
+            let cityData = city.value;
+
+            fetch('https://api.openweathermap.org/data/2.5/weather?q=' + cityData + '&appid=50b2b85cf04e9a34b6b9af7771318b94')
+                .then(response => {
+                    return response.json();
+                })
+                .then(data => {
+                    console.log(data);
+                    let t = (data.main.temp - 273).toFixed(1);
+                    let p = (data.main.feels_like - 273).toFixed(1);
+                    let s = (data.wind.speed)
+                    let c = (data.sys.country)
+                    let d = (data.weather[0].description)
+                    console.log(t + '°C');
+                    console.log(d);
+                    if (t > 25) {
+                        logo.style.backgroundImage = 'url(sun.png)'
+                        logo_2.style.backgroundImage = 'url(sunny.png)'
+                        checkWeather.style.color = ' rgba(57, 14, 14, 0.5)'
+                        wrap.style.background = 'rgb(246,179,107)';
+                        wrap.style.background = 'radial-gradient(circle, rgba(246,179,107,1) 0%, rgba(226,87,120,1) 84%)';
+                        
+                    } else if (t < 5) {
+                        logo.style.backgroundImage = 'url(snowflake.png)'
+                        logo_2.style.backgroundImage = 'url(clouds.png)'
+                        checkWeather.style.color = 'rgba(16, 36, 82, 0.5)' 
+                        wrap.style.background = 'rgb(135,206,255)';
+                        wrap.style.background = 'radial-gradient(circle, rgba(135,206,255,1) 0%, rgba(108,147,245,1) 85%)';
+                    } else{
+                        logo.style.backgroundImage = 'url(cloud.png)'
+                        logo_2.style.backgroundImage = 'url(fog.png)'
+                        wrap.style.background = 'rgb(136,241,192)';
+                        wrap.style.background = ' radial-gradient(circle, rgba(136,241,192,1) 2%, rgba(71,153,184,1) 83%)';
+
+                    }
+                    country.innerText ='country: ' + c;
+                    temperature.innerText ='temperature: ' +  t + '°C';
+                    feels_like.innerText ='feels like: ' + p + '°C';
+                    wind.innerText ='wind speed: '+  s;
+                    description.innerText ='description: ' + d
+                    
+                })
+        }
+    </script>
+</body></html>
+
